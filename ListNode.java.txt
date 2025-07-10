@@ -1,0 +1,12 @@
+class ListNode {
+    int data;
+    ListNode next;
+    ListNode left, right;
+
+    ListNode(int data) {
+        this.data = data;
+        this.next = null;
+        this.left = null;
+        this.right = null;
+    }
+}

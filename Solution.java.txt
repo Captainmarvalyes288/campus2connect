@@ -1,0 +1,242 @@
+import java.util.*;
+
+class Solution {
+
+    public static boolean isPalindromeString(String word) {
+        int start = 0;
+        int end = word.length() - 1;
+
+        while (start < end) {
+            if (word.charAt(start) != word.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    public static void reverseStack(Stack<Integer> st) {
+        if (st.isEmpty()) return;
+
+        int top = st.pop();
+        reverseStack(st);
+        insertAtBottom(st, top);
+    }
+
+    public static void insertAtBottom(Stack<Integer> st, int item) {
+        if (st.isEmpty()) {
+            st.push(item);
+            return;
+        }
+
+        int top = st.pop();
+        insertAtBottom(st, item);
+        st.push(top);
+    }
+
+    public static ListNode reverseLinkedList(ListNode head) {
+        if (head == null || head.next == null) return head;
+
+        Stack<Integer> stack = new Stack<>();
+        ListNode temp = head;
+
+        while (temp != null) {
+            stack.push(temp.data);
+            temp = temp.next;
+        }
+
+        temp = head;
+        while (temp != null) {
+            temp.data = stack.pop();
+            temp = temp.next;
+        }
+        return head;
+    }
+
+    public static int[] reverseKNumberInQueue(int k, Deque<Integer> arr) {
+        int[] array = new int[arr.size()];
+        Stack<Integer> stack = new Stack<>();
+
+        for (int i = 0; i < k; i++) {
+            stack.push(arr.pollFirst());
+        }
+
+        int index = 0;
+        while (!stack.isEmpty()) {
+            array[index++] = stack.pop();
+        }
+
+        while (!arr.isEmpty()) {
+            array[index++] = arr.pollFirst();
+        }
+
+        return array;
+    }
+
+    public static boolean isLinkedListPalindrome(ListNode head) {
+        ListNode temp = head;
+        int count = 1;
+
+        while (temp.next != null) {
+            count++;
+            temp = temp.next;
+        }
+
+        int[] arr = new int[count];
+        count = 0;
+        temp = head;
+        while (temp != null) {
+            arr[count++] = temp.data;
+            temp = temp.next;
+        }
+
+        return isArrayPalindrome(arr);
+    }
+
+    public static boolean isArrayPalindrome(int[] arr) {
+        int start = 0;
+        int end = arr.length - 1;
+        while (start < end) {
+            if (arr[start] != arr[end]) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    public static List<Integer> splitLinkedList(ListNode head) {
+        if (head == null) return new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
+        ListNode temp = head;
+        int count = 1;
+
+        while (temp.next != null && temp.next != head) {
+            count++;
+            temp = temp.next;
+        }
+
+        int toAdd = (count % 2 == 0) ? count : (count + 1);
+        temp = head;
+        for (int i = 0; i < toAdd && temp != null; i++) {
+            result.add(temp.data);
+            temp = temp.next;
+        }
+
+        return result;
+    }
+
+    public static void insertIntoBinaryTree(ListNode root, int data) {
+        if (root == null) return;
+        Queue<ListNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            ListNode current = queue.poll();
+            if (current.left == null) {
+                current.left = new ListNode(data);
+                break;
+            } else queue.add(current.left);
+
+            if (current.right == null) {
+                current.right = new ListNode(data);
+                break;
+            } else queue.add(current.right);
+        }
+    }
+
+    public static int sizeOfBinaryTree(ListNode root) {
+        if (root == null) return 0;
+        int size = 0;
+        Queue<ListNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            ListNode current = queue.poll();
+            size++;
+            if (current.left != null) queue.add(current.left);
+            if (current.right != null) queue.add(current.right);
+        }
+        return size;
+    }
+
+    public static int countHalfNodes(ListNode root) {
+        if (root == null) return 0;
+        int count = 0;
+        Queue<ListNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            ListNode current = queue.poll();
+            boolean hasLeft = current.left != null;
+            boolean hasRight = current.right != null;
+            if ((hasLeft && !hasRight) || (!hasLeft && hasRight)) {
+                count++;
+            }
+            if (hasLeft) queue.add(current.left);
+            if (hasRight) queue.add(current.right);
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+
+        String word = "abcba";
+        System.out.println("Is Palindrome: " + isPalindromeString(word));
+
+        Stack<Integer> stack = new Stack<>();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        stack.push(4);
+
+        System.out.println("Original Stack: " + stack);
+        reverseStack(stack);  // Uses only push and pop
+        System.out.println("Reversed Stack: " + stack);
+
+        int k = 3;
+        Deque<Integer> queue = new ArrayDeque<>(Arrays.asList(1, 2, 3, 4, 5));
+        System.out.println("Reversed K Queue: " + Arrays.toString(reverseKNumberInQueue(k, queue)));
+
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(3);
+        head.next.next.next = new ListNode(2);
+        head.next.next.next.next = new ListNode(1);
+        ListNode reversed = reverseLinkedList(head);
+        System.out.print("Reversed Linked List: ");
+        while (reversed != null) {
+            System.out.print(reversed.data + " ");
+            reversed = reversed.next;
+        }
+        System.out.println();
+
+        boolean result = isLinkedListPalindrome(head);
+        System.out.println("Is Linked List Palindrome: " + result);
+
+        ListNode head1 = new ListNode(1);
+        head1.next = new ListNode(2);
+        head1.next.next = new ListNode(3);
+        head1.next.next.next = head1; // Circular
+        List<Integer> result1 = splitLinkedList(head1);
+        System.out.println("Split Result 1: " + result1);
+
+        ListNode root = new ListNode(1);
+        insertIntoBinaryTree(root, 2);
+        insertIntoBinaryTree(root, 3);
+        insertIntoBinaryTree(root, 4);
+        insertIntoBinaryTree(root, 5);
+        insertIntoBinaryTree(root, 6);
+        insertIntoBinaryTree(root, 7);
+        insertIntoBinaryTree(root, 8);
+
+        System.out.println("Binary Tree Size: " + sizeOfBinaryTree(root));
+        System.out.println("Half Nodes Count: " + countHalfNodes(root));
+
+        ListNode head2 = new ListNode(1);
+        head2.next = new ListNode(2);
+        head2.next.next = new ListNode(3);
+        head2.next.next.next = head2; // Circular
+        List<Integer> result2 = splitLinkedList(head2);
+        System.out.println("Split Result 2: " + result2);
+    }
+}
